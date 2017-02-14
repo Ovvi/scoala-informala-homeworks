@@ -73,26 +73,3 @@ public class AthleteEvaluation {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
