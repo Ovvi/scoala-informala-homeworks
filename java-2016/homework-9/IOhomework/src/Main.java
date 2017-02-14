@@ -1,6 +1,7 @@
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
+
 
 /**
  * Created by Turian Ovidiu.
@@ -10,30 +11,33 @@ import java.util.List;
 
 public class Main {
 
-    List<Athlete> athletes = new ArrayList<>();
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String[] args) {
+        List<Athlete> athletes;
 
         File fileRead = new File("C:" + File.separator + "Users" + File.separator + "Ovi" + File.separator + "Desktop" + File.separator + "Curs" + File.separator + "IOFiles" + File.separator + "Athletes.csv");
         File fileWrite = new File("C:" + File.separator + "Users" + File.separator + "Ovi" + File.separator + "Desktop" + File.separator + "Curs" + File.separator + "IOFiles" + File.separator + "AthletesRanking.csv");
-        Main main = new Main();
+
         AthleteEvaluation athleteEvaluation = new AthleteEvaluation();
         ReadFile reader = new ReadFile();
         WriteFile writer = new WriteFile();
 
         reader.readFile(fileRead);
 
-        main.athletes = reader.getAthletes();
-        main.athletes = athleteEvaluation.rankingAthletes(reader.getAthletes());
+        athletes = reader.getAthletes();
+        athletes = athleteEvaluation.getAthletesRanking(reader.getAthletes());
 
-        writer.writeFile(main.athletes, fileWrite);
 
-        for (Athlete ath : main.athletes) {
+        for (Athlete ath : athletes) {
             System.out.println(ath.getAthleteNumber());
             System.out.println(ath.getName());
             System.out.println(ath.getMinuteSeconds());
+            System.out.println(ath.getCountryCode());
         }
 
+        writer.writeFile(athletes, fileWrite);
+
     }
+
 }
 

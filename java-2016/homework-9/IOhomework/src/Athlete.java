@@ -77,6 +77,7 @@ public class Athlete {
 
     /**
      * This method return just the minutes and seconds of the ski time result.
+     *
      * @return String minutes and seconds of the ski time result.
      */
     public String getMinuteSeconds() {
@@ -86,5 +87,10 @@ public class Athlete {
         int seconds = calendar.get(Calendar.SECOND);
         String time = minutes + ":" + seconds;
         return time;
+    }
+
+    @Override
+    public String toString() {
+        return "AthleteNumber,AthleteName,CountryCode,SkiTimeResult,FirstShootingRange,SecondShooting,ThirdShootingRange";
     }
 }

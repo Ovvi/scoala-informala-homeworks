@@ -7,7 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class ReadFile {
 
-    private static Logger LOGGER = Logger.getLogger("ReadFile");
+    private final static Logger LOGGER = Logger.getLogger(ReadFile.class);
 
     private List<Athlete> athletes = new ArrayList<>();
 
@@ -24,70 +25,120 @@ public class ReadFile {
         return athletes;
     }
 
-    public ReadFile() {
-    }
 
     /**
      * This method will read the given file and store the data.
+     *
      * @param file the file we want to read.
+     * @return a list of Athletes from the file.
      */
-    public void readFile(File file) {
-        LOGGER.info("Inside read file method.");
+    public List<Athlete> readFile(File file) throws IOException {
+        LOGGER.debug("Inside read file method.");
 
         String line;
         boolean column = true;
 
+
         if (!file.exists()) {
-            throw new IllegalArgumentException("The file do not exist");
+            try {
+                throw new FileNotFoundException("File does not exist.");
+            } catch (FileNotFoundException e) {
+                LOGGER.error("File does not exist.", e);
+                throw e;
+            }
         }
 
-        if (file.length() == 0){
-            throw new IllegalArgumentException("The file do not exist");
+
+        if (file.length() == 0) {
+            try {
+                throw new IOException("The file is empty.");
+            } catch (IOException e) {
+                LOGGER.error("The file is empty.", e);
+            }
         }
 
-        LOGGER.info("Start reading file.");
+        LOGGER.debug("Start reading file.");
         try (BufferedReader getInfo = new BufferedReader(new java.io.FileReader(file))) {
 
             while ((line = getInfo.readLine()) != null) {
                 if (!column) {
-                    athletes.add(storeData(line));
+                    athletes.add(getAthlete(line));
                 } else {
                     column = false;
                 }
             }
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found!" + e);
-        } catch (IOException e) {
-            System.err.println("Exception reading file!" + e);
+        } catch (IOException ex) {
+            LOGGER.error("Exception reading file!", ex);
+            throw ex;
         }
-        LOGGER.info("Exit read file method.");
+
+        LOGGER.debug("Exit read file method.");
+        return athletes;
     }
 
 
     /**
      * This method will split the csv file and it will store a data into an Athlete object.
+     *
      * @param line represent each line from the file.
      * @return an Athlete object.
      */
-    private Athlete storeData(String line) {
+    private Athlete getAthlete(String line) {
         Athlete athlete = new Athlete();
-        String[] stringArray;
+        String[] stringArray = line.split(",");
 
-        if (line == null) {
-            throw new IllegalArgumentException("Line can`t be null");
+
+        if (stringArray.length != 7) {
+            throw new InvalidAthleteException("Missing data from Athlete.");
         } else {
-            stringArray = line.split(",");
-            athlete.setAthleteNumber(Integer.parseInt(stringArray[0]));
-            athlete.setName(stringArray[1]);
-            athlete.setCountryCode(stringArray[2]);
-            try {
-                athlete.setSkiTimeResult(new SimpleDateFormat("mm:ss").parse(stringArray[3]));
-            } catch (ParseException e) {
-                e.printStackTrace();
+
+            if (stringArray[0].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have a number.");
+            } else {
+                athlete.setAthleteNumber(Integer.parseInt(stringArray[0]));
             }
-            athlete.setFirstShootingRange(stringArray[4]);
-            athlete.setSecondShootingRange(stringArray[5]);
-            athlete.setThirdShootingRange(stringArray[6]);
+
+            if (stringArray[1].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have a name.");
+            } else {
+                athlete.setName(stringArray[1]);
+            }
+
+            if (stringArray[2].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have country code.");
+            } else {
+
+                athlete.setCountryCode(stringArray[2]);
+            }
+
+            if (stringArray[3].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have ski time result.");
+            } else {
+                try {
+                    athlete.setSkiTimeResult(new SimpleDateFormat("mm:ss").parse(stringArray[3]));
+                } catch (ParseException e) {
+                    LOGGER.error("Error parsing ski time result.", e);
+                    e.printStackTrace();
+                }
+            }
+
+            if (stringArray[4].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have first shooting range.");
+            } else {
+                athlete.setFirstShootingRange(stringArray[4]);
+            }
+
+            if (stringArray[5].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have second shooting range.");
+            } else {
+                athlete.setSecondShootingRange(stringArray[5]);
+            }
+
+            if (stringArray[6].equals("")) {
+                throw new InvalidAthleteException("The Athlete does not have third shooting range.");
+            } else {
+                athlete.setThirdShootingRange(stringArray[6]);
+            }
         }
 
         return athlete;

@@ -2,7 +2,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 /**
  * Created by Turian Ovidiu.
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 public class WriteFile {
 
 
-    private static Logger LOGGER = Logger.getLogger("WriteFile");
+     private static final Logger LOGGER = Logger.getLogger(WriteFile.class);
 
 
     /**
@@ -21,15 +22,15 @@ public class WriteFile {
      */
     public void writeFile(List<Athlete> athletes , File file) {
 
-        LOGGER.info("Inside write file method.");
+        LOGGER.debug("Inside write file method.");
 
         if (athletes == null){
-            throw new IllegalArgumentException("No athletes to write.");
+            throw new InvalidAthleteException("No athletes to write.");
         }
 
         try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(file.getAbsolutePath()))) {
 
-            String columns = "AthleteNumber,AthleteName,CountryCode,SkiTimeResult,FirstShootingRange,SecondShooting,ThirdShootingRange";
+            String columns = new Athlete().toString();
             writer.write(columns);
             writer.write("\n");
 
@@ -44,6 +45,6 @@ public class WriteFile {
             e.printStackTrace();
         }
 
-        LOGGER.info("Exit write file method.");
+        LOGGER.debug("Exit write file method.");
     }
 }

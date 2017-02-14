@@ -8,16 +8,12 @@ import java.util.*;
 public class AthleteEvaluation {
 
 
-    public AthleteEvaluation() {
-    }
-
-
     /**
      * This method takes a list of Athletes and will return an list sorted by ski time result after calculation the shots.
      * @param athletes the list of Athletes.
      * @return list of Athletes sorted by ski time result after calculation the shots.
      */
-    public List<Athlete> rankingAthletes(List<Athlete> athletes) {
+    public List<Athlete> getAthletesRanking(List<Athlete> athletes) {
         calculateShots(athletes);
         evaluateRanking(athletes);
         return athletes;
@@ -37,25 +33,21 @@ public class AthleteEvaluation {
             for (char c : athlete.getFirstShootingRange().toCharArray()) {
                 if (c == 'o') {
                     calendar.add(Calendar.SECOND, 10);
-                    athlete.setSkiTimeResult(calendar.getTime());
                 }
             }
 
             for (char c : athlete.getSecondShootingRange().toCharArray()) {
                 if (c == 'o') {
-                    calendar.setTime(athlete.getSkiTimeResult());
                     calendar.add(Calendar.SECOND, 10);
-                    athlete.setSkiTimeResult(calendar.getTime());
                 }
             }
 
             for (char c : athlete.getThirdShootingRange().toCharArray()) {
                 if (c == 'o') {
-                    calendar.setTime(athlete.getSkiTimeResult());
                     calendar.add(Calendar.SECOND, 10);
-                    athlete.setSkiTimeResult(calendar.getTime());
                 }
             }
+            athlete.setSkiTimeResult(calendar.getTime());
         }
     }
 
