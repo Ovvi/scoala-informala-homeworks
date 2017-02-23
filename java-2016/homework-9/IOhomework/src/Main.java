@@ -22,9 +22,7 @@ public class Main {
         ReadFile reader = new ReadFile();
         WriteFile writer = new WriteFile();
 
-        reader.readFile(fileRead);
-
-        athletes = reader.getAthletes();
+        athletes = reader.readFile(fileRead);
         athletes = athleteEvaluation.getAthletesRanking(reader.getAthletes());
 
 
